@@ -12,8 +12,9 @@ Die Musterwebsite **ist kein veröffentlichtes Immobilienangebot**. Vor `SITE_MO
 - [ ] Dokumente nach Freigabe unter `public/documents/` veröffentlichen; vertrauliche Unterlagen niemals dort ablegen.
 - [ ] Ausstattungsmerkmale, technische Angaben, Renovationen und Umgebungseinrichtungen freigeben.
 - [ ] Rechtliche Texte und Datenschutzkonzept (DSG, allenfalls DSGVO), Datenflüsse, Aufbewahrungsfristen und Dienstleister durch Fachperson prüfen.
-- [ ] E-Mail-Versanddienst mit `RESEND_API_KEY`, `CONTACT_FROM_EMAIL`, `CONTACT_TO_EMAIL` konfigurieren und kontrollierte Testanfrage durchführen.
-- [ ] Rate-Limiter mit persistentem Edge-Store oder Redis für Produktion ergänzen; aktuell pro Node-Instanz im Arbeitsspeicher.
+- [ ] Formspree-Formular erstellen, `PUBLIC_FORMSPREE_ENDPOINT` als Build-Variable setzen und eine kontrollierte Testanfrage durchführen.
+- [ ] Datenverarbeitung, Empfänger, Aufbewahrung und allfällige Drittlandübermittlungen des Formspree-Dienstes datenschutzrechtlich prüfen und dokumentieren.
+- [ ] GitHub-Pages-Deployment der statischen `dist/`-Dateien und Projektpfadbasis `/haus` überprüfen; diese Site enthält keinen Node-API-Endpunkt.
 - [ ] Öffentliche HTTPS-Domain in `PUBLIC_SITE_URL` angeben, Sitemap, robots.txt und Canonicals kontrollieren.
 - [ ] Reale Medien für WebP/AVIF nach Möglichkeit mit Astro Assets optimieren; LCP- und Mobile-Messungen vornehmen.
 - [ ] `npm run check:content`, `npm run check`, `npm run test`, `npm run test:e2e`, `npm run build` erfolgreich ausführen.

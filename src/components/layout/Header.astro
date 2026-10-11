@@ -1,20 +1,22 @@
 ---
 import { site, isDemo } from '../../config/site';
+import { withBase } from '../../lib/paths';
 import Icon from '../ui/Icon.astro';
-const pathname = Astro.url.pathname.replace(/\/$/,'') || '/';
-const links = [{href:'/haus',label:'Das Haus'},{href:'/galerie',label:'Galerie'},{href:'/grundrisse',label:'Grundrisse'},{href:'/lage',label:'Lage'}];
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pathname = (Astro.url.pathname.replace(new RegExp(`^${basePath}(?=/|$)`), '').replace(/\/$/,'') || '/');
+const links = [{path:'/haus',label:'Das Haus'},{path:'/galerie',label:'Galerie'},{path:'/grundrisse',label:'Grundrisse'},{path:'/lage',label:'Lage'}];
 ---
 <header class="site-header" id="seitenanfang">
  <div class="shell nav-shell">
-  <a class="brand" href="/" aria-label={`${site.name} – zur Startseite`}><span class="brand-symbol"><img src="/images/brand-mark.svg" width="33" height="33" alt="" /></span><span>{site.name}<small>IMMOBILIENEXPOSÉ</small></span></a>
-  <nav class="desktop-nav" aria-label="Hauptnavigation">{links.map(l=><a href={l.href} class:list={{active:pathname===l.href}} aria-current={pathname===l.href?'page':undefined}>{l.label}</a>)}</nav>
-  <a class="btn btn-primary header-cta" href="/kontakt?anliegen=besichtigung"><span>Besichtigung anfragen</span><Icon name="arrow-up-right" size={17}/></a>
+  <a class="brand" href={withBase('/')} aria-label={`${site.name} – zur Startseite`}><span class="brand-symbol"><img src={withBase('/images/brand-mark.svg')} width="33" height="33" alt="" /></span><span>{site.name}<small>IMMOBILIENEXPOSÉ</small></span></a>
+  <nav class="desktop-nav" aria-label="Hauptnavigation">{links.map(l=><a href={withBase(l.path)} class:list={{active:pathname===l.path}} aria-current={pathname===l.path?'page':undefined}>{l.label}</a>)}</nav>
+  <a class="btn btn-primary header-cta" href={withBase('/kontakt?anliegen=besichtigung')}><span>Besichtigung anfragen</span><Icon name="arrow-up-right" size={17}/></a>
   <button class="mobile-menu-trigger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu" data-menu-button><Icon name="menu" size={23}/></button>
  </div>
  <nav class="mobile-nav" id="mobile-menu" aria-label="Mobile Navigation" hidden>
-  <div class="shell mobile-nav-content">{links.map(l=><a href={l.href} aria-current={pathname===l.href?'page':undefined}>{l.label}<Icon name="arrow-up-right" size={18}/></a>)}
-   <a href="/unterlagen">Unterlagen<Icon name="arrow-up-right" size={18}/></a>
-   <a href="/kontakt?anliegen=besichtigung" class="btn btn-primary mobile-nav-cta">Besichtigung anfragen<Icon name="arrow-right" size={18}/></a>
+  <div class="shell mobile-nav-content">{links.map(l=><a href={withBase(l.path)} aria-current={pathname===l.path?'page':undefined}>{l.label}<Icon name="arrow-up-right" size={18}/></a>)}
+   <a href={withBase('/unterlagen')}>Unterlagen<Icon name="arrow-up-right" size={18}/></a>
+   <a href={withBase('/kontakt?anliegen=besichtigung')} class="btn btn-primary mobile-nav-cta">Besichtigung anfragen<Icon name="arrow-right" size={18}/></a>
   </div>
  </nav>
 </header>

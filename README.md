@@ -1,6 +1,6 @@
 # Atelier Haus – Premium-Immobilienwebsite
 
-Eine **mehrseitige Astro-Website** mit einer von einem Graustufen-Wireframe abgeleiteten Startseite, zentralen Immobiliendaten, responsivem Editorial-Design, zweistufiger Galerie inklusive PhotoSwipe, Dokumentenverwaltung und serverseitiger Kontaktverarbeitung.
+Eine **mehrseitige, statisch gerenderte Astro-Website** für GitHub Pages mit einer von einem Graustufen-Wireframe abgeleiteten Startseite, zentralen Immobiliendaten, responsivem Editorial-Design, zweistufiger Galerie inklusive PhotoSwipe, Dokumentenverwaltung und vorbereitetem Formspree-Kontaktformular.
 
 **Wichtiger Status:** Alle Objektangaben und Illustrationen sind **Demo-Inhalte**, kein reales Verkaufsangebot. Die Website wurde so gebaut, dass unbekannte Immobilienwerte nicht erfunden werden. Der Demo-Modus lässt keine erfolgreich zugestellte Nachricht vortäuschen. Vor dem Livegang gilt [LIVEGANG-CHECKLIST.md](./LIVEGANG-CHECKLIST.md).
 
@@ -16,7 +16,7 @@ npm install
 npm run dev
 ```
 
-Im Browser `http://localhost:4321` öffnen. Die Webseite verwendet Astro 5, Tailwind CSS 4 über das Vite-Plugin, TypeScript, `@lucide/astro`, PhotoSwipe 5 und für API-Routen den Astro Node Adapter.
+Im Browser `http://localhost:4321/haus/` öffnen. Die Webseite verwendet Astro 5, Tailwind CSS 4 über das Vite-Plugin, TypeScript, `@lucide/astro` und PhotoSwipe 5. Sie wird vollständig statisch ohne Node-Adapter gebaut.
 
 ### Build und Test
 
@@ -25,7 +25,7 @@ npm run check:content    # Veröffentlichungsprüfung
 npm run check            # Astro/TypeScript-Prüfung
 npm run test             # Unit-Tests für Filter und Formular
 npm run test:e2e         # Chromium-Browser-Tests (Playwright)
-npm run build            # statische Seiten + Node-API
+npm run build            # statische Seiten in dist/
 npm run preview
 ```
 
@@ -35,18 +35,17 @@ Playwright-Browser bei Bedarf zuerst herunterladen: `npx playwright install chro
 
 | Route | Funktion |
 |---|---|
-| `/` | Hero, Kennzahlen, Vorschau, Beschreibung, Ausstattung, Grundriss, Lage, Kontakt |
-| `/haus` | Vertiefte Immobilien- und Technikbeschreibung |
-| `/galerie` | Varianten- und Gebäudebereich-Filter, URL-Zustände, Lightbox |
-| `/grundrisse` | Geschossansichten mit Zoom |
-| `/lage` | Standort, Umgebungsinformationen, neutrale Demo-Karte |
-| `/kontakt` | Wiederverwendbares Kontaktformular mit Anliegen-Vorwahl |
-| `/unterlagen` | Öffentliche Dokumente und Anfrageaktionen |
-| `/impressum` / `/datenschutz` | Prüffähige Rechtstextvorlagen |
-| `/api/contact` | Nicht vorgerenderter POST-Endpunkt (Node) |
-| `/404` | Fehlerseite |
+| `/haus/` | Hero, Kennzahlen, Vorschau, Beschreibung, Ausstattung, Grundriss, Lage, Kontakt |
+| `/haus/haus` | Vertiefte Immobilien- und Technikbeschreibung |
+| `/haus/galerie` | Varianten- und Gebäudebereich-Filter, URL-Zustände, Lightbox |
+| `/haus/grundrisse` | Geschossansichten mit Zoom |
+| `/haus/lage` | Standort, Umgebungsinformationen, neutrale Demo-Karte |
+| `/haus/kontakt` | Wiederverwendbares Kontaktformular mit Anliegen-Vorwahl |
+| `/haus/unterlagen` | Öffentliche Dokumente und Anfrageaktionen |
+| `/haus/impressum` / `/haus/datenschutz` | Prüffähige Rechtstextvorlagen |
+| GitHub-Pages-404 | Fehlerseite aus `dist/404.html` |
 
-Astro rendert Inhaltsseiten standardmässig statisch. **Nur die API-Route** benötigt einen Node-Prozess. Die Astro-Konfiguration verwendet `output: 'static'` mit `@astrojs/node` (`mode: 'standalone'`).
+Die Astro-Konfiguration setzt `site: 'https://sandroda9.github.io'`, `base: '/haus'` und `output: 'static'`. Astro baut damit Dateien für das GitHub-Pages-Projekt unter `https://sandroda9.github.io/haus/`; für den Betrieb ist kein Node-Prozess erforderlich.
 
 ### Dateiverwaltung
 
@@ -65,9 +64,8 @@ src/
                       documents.ts, renovations.ts, location.ts
   lib/gallery/        filter.ts, url-state.ts, lightbox.ts
   lib/validation/     contact.ts
-  lib/server/         contact-service.ts, rate-limit.ts
   types/              Typisierte Schnittstellen
-  pages/              Astro-Routen und api/contact.ts
+  pages/              Statische Astro-Routen
   styles/             global.css
 public/images/        Lokale, als DEMO markierte Illustrationen
 public/documents/     Nur öffentlich freigegebene Unterlagen!
@@ -112,31 +110,19 @@ Neue Geschosse in `src/data/floorplans.ts` anlegen und auf `mediaId` eines Eintr
 
 ### Dokumente und Datenschutz
 
-In `documents.ts` muss für einen öffentlichen Download **beides** gelten: `access:'public'` und `approved:true`. Zusätzlich einen gültigen `path` hinterlegen. Dateien, die nur auf Anfrage verfügbar sein sollen, **nicht unter `public/` speichern**. Ein versteckter Link ist keine Zugriffssperre. Für geschützte Freigaben kann ein signierter, serverseitig autorisierter Download-Endpunkt ergänzt werden; der Muster-Code liefert bewusst keine privaten Dateien aus.
+In `documents.ts` muss für einen öffentlichen Download **beides** gelten: `access:'public'` und `approved:true`. Zusätzlich einen gültigen `path` hinterlegen. Dateien, die nur auf Anfrage verfügbar sein sollen, **nicht unter `public/` speichern**. Ein versteckter Link ist keine Zugriffssperre. GitHub Pages bietet keine geschützten Downloads oder serverseitigen Endpunkte; dafür wäre ein separater Dienst erforderlich.
 
-## 4. E-Mail und serverseitige Anfrage
+## 4. Kontaktformular mit Formspree
 
-Folgende Variablen stehen in `.env` zur Verfügung:
+Das Formular sendet nach der Einrichtung direkt an Formspree. Bis ein Endpunkt eingetragen ist, bleibt die Senden-Schaltfläche deaktiviert; es wird weder ein Versand noch ein Erfolg simuliert. In `.env` (lokal) beziehungsweise als Build-Umgebungsvariable für GitHub Actions:
 
 | Variable | Zweck |
 |---|---|
 | `SITE_MODE` | `demo` oder `production` |
-| `PUBLIC_SITE_URL` | Echte HTTPS-Domain, Canonical-URLs und Sitemap |
-| `RESEND_API_KEY` | API-Schlüssel des Transaktions-E-Mail-Dienstes |
-| `CONTACT_FROM_EMAIL` | Verifizierte Absenderadresse beim E-Mail-Anbieter |
-| `CONTACT_TO_EMAIL` | Tatsächliche Empfängeradresse |
-| `RATE_LIMIT_SALT` | Reserviert für erweiterte Rate-Limits; derzeit nicht verwendet |
+| `PUBLIC_SITE_URL` | Origin der GitHub-Pages-Site für Canonical-/OG-URLs |
+| `PUBLIC_FORMSPREE_ENDPOINT` | Vollständiger Formspree-Endpunkt, z. B. `https://formspree.io/f/xxxxxxxx` |
 
-Vor dem produktiven Versand:
-
-1. Anbieter-/Absender-Domain beim E-Mail-Anbieter verifizieren.
-2. Alle drei E-Mail-Variablen eintragen.
-3. `SITE_MODE=production` erst nach dem vollständigen Inhaltscheck setzen.
-4. Kontrollierte Testanfragen mit echter Provider-Annahme (Antwort mit Nachrichten-ID), Providerfehlern und fehlender Konfiguration durchführen.
-
-Der Endpunkt kontrolliert `Origin`, Content-Type und Eingabelängen, verwendet Honeypot und einen speicherbasierten Rate-Limiter (5 Anfragen je Schlüssel innerhalb von 15 Minuten), sendet Text ohne HTML-Injektion und gibt technische Geheimnisse nicht an den Browser weiter. Die Erfolgsmeldung erfolgt nur, wenn der E-Mail-Provider die Anfrage mit einer Nachrichten-ID bestätigt. Dies beweist **Annahme durch den Provider, nicht die endgültige Zustellung ins Postfach**.
-
-**Sicherheitseinschränkung:** Der mitgelieferte In-Memory-Rate-Limiter ist für einen einzelnen Node-Prozess geeignet, aber nicht für mehrere Instanzen und nicht DDoS-sicher. Produktive Systeme benötigen zusätzlich einen vertrauenswürdig konfigurierten Reverse-Proxy/Edge-Schutz und ein persistentes Limit. Zusätzliche Fachprüfung und Anpassen der Proxy-Vertrauensstellung sind erforderlich.
+Nach dem Erstellen des Formspree-Formulars den vollständigen Endpunkt eintragen. Das Formular zeigt eine Erfolgsbestätigung ausschliesslich bei einer erfolgreichen HTTP-Antwort von Formspree an; diese bestätigt die Annahme durch den Dienst, nicht die endgültige Zustellung ins Postfach. Ohne Konfiguration werden keine Anfragen übertragen.
 
 ## 5. Design, Anpassungen und Performance
 
@@ -151,26 +137,21 @@ Foto- und Plan-Betrachtung verwendet eine einzige zentrale PhotoSwipe-Initialisi
 - Individuelle Titles und Meta-Descriptions je Seite über `BaseLayout.astro`
 - `noindex,nofollow` und `robots.txt` im Demo-Modus
 - Canonical/OG-URLs nur bei tatsächlich konfiguriertem `PUBLIC_SITE_URL`
-- Sitemap nur, wenn die Site-URL vorhanden ist
+- Sitemap wird für `site` und die Projektbasis `/haus` generiert
 - Kein Fake-Standort, keine ungeprüften Distanzen, keine ungefragt eingebetteten Kartendienste
 - Vor Livegang je nach konkreter, bestätigter Datenlage geeignete strukturierte Daten für das Immobilienangebot ergänzen
 
-## 7. Deployment (Node)
+## 7. Deployment (GitHub Pages)
 
-Für den Node-Standalone-Adapter nach erfolgreichem `npm run build`:
+`npm run build` erzeugt die statische Website unter `dist/`. Diese Dateien können als Artefakt für GitHub Pages veröffentlicht werden. Bei GitHub Actions den Formspree-Endpunkt als `PUBLIC_FORMSPREE_ENDPOINT` während des Builds setzen, falls das Kontaktformular aktiviert werden soll. Die Pfadbasis `/haus` ist für das GitHub-Pages-Projekt bereits konfiguriert.
 
-```bash
-node ./dist/server/entry.mjs
-```
-
-Stellen Sie einen Node-22-Host und HTTPS/Reverse-Proxy bereit. Die `dist/client`-Assets müssen von der Node-Laufzeit oder einer korrekt konfigurierten CDN-Auslieferung erreichbar sein. Die Umgebungsvariablen werden **serverseitig** konfiguriert; API-Schlüssel nie als `PUBLIC_...` bereitstellen. Die `PUBLIC_SITE_URL` vor dem Build setzen. Der genaue Deployment-Prozess richtet sich nach dem Host.
 
 ## 8. Prüfstatus & bekannte Einschränkungen
 
 - Das Projekt enthält sowohl Unit- als auch Playwright-Tests. Ein erfolgreicher Teststatus darf ausschliesslich nach eigener Ausführung behauptet werden.
 - Die Demo enthält keine verifizierten Immobilienkennzahlen, Originalfotos oder echten Pläne; «Aktuell + Aussenbereich» zeigt daher absichtlich eine Leermeldung.
 - Rechtliche Texte sind Vorlagen und nicht rechtsgeprüft.
-- Kein realer Versand ohne Produktionskonfiguration und verifizierte Versanddomain.
+- Kein realer Versand, bis ein Formspree-Endpunkt eingerichtet und als Build-Variable konfiguriert ist.
 - Kein externes Kartenembed; eine neutrale Standortgrafik dient als Ersatz.
 - Vor dem öffentlichen Livegang sind zwingend reale Medien, Inhaltspflege, Browser-Checks, Accessibility- und Performance-Messungen notwendig.
 

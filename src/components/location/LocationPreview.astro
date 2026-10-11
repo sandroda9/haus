@@ -1,9 +1,10 @@
 ---
 import {property} from '../../data/property';
 import {location} from '../../data/location';
+import {withBase} from '../../lib/paths';
 import Icon from '../ui/Icon.astro';
 ---
 <section class="section section-muted" id="lage-vorschau"><div class="shell"><div class="section-head-inline"><div><span class="eyebrow">LAGE & UMGEBUNG</span><h2>Ein Ort, der<br/><em>zum Leben passt.</em></h2></div></div>
- <div class="location-layout"><div class="location-graphic"><img src="/images/location-placeholder.svg" width="1200" height="700" loading="lazy" alt="Neutrale, nicht geografische Standortgrafik; der tatsächliche Standort ist noch nicht hinterlegt"/></div>
- <div class="location-copy"><span class="eyebrow">STANDORT</span><h3>{property.municipality ?? 'Standort wird ergänzt'}</h3><p>{location.overview}</p>{location.highlights.length ? <ul class="nearby-list">{location.highlights.filter(h=>h.verified).map(h=><li><Icon name="pin" size={18}/><span>{h.name}</span>{h.distance&&<strong>{h.distance}</strong>}</li>)}</ul> : <div class="location-pending"><Icon name="compass" size={22}/><span>Verkehr, Einkauf, Schulen und Naherholung: Angaben folgen nach Prüfung.</span></div>}<a class="text-link" href="/lage">Lage entdecken <Icon name="arrow-up-right" size={18}/></a></div>
+ <div class="location-layout"><div class="location-graphic"><img src={withBase('/images/location-placeholder.svg')} width="1200" height="700" loading="lazy" alt="Neutrale, nicht geografische Standortgrafik; der tatsächliche Standort ist noch nicht hinterlegt"/></div>
+ <div class="location-copy"><span class="eyebrow">STANDORT</span><h3>{property.municipality ?? 'Standort wird ergänzt'}</h3><p>{location.overview}</p>{location.highlights.length ? <ul class="nearby-list">{location.highlights.filter(h=>h.verified).map(h=><li><Icon name="pin" size={18}/><span>{h.name}</span>{h.distance&&<strong>{h.distance}</strong>}</li>)}</ul> : <div class="location-pending"><Icon name="compass" size={22}/><span>Verkehr, Einkauf, Schulen und Naherholung: Angaben folgen nach Prüfung.</span></div>}<a class="text-link" href={withBase('/lage')}>Lage entdecken <Icon name="arrow-up-right" size={18}/></a></div>
  </div></div></section>

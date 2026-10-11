@@ -1,6 +1,7 @@
 ---
 import {property} from '../../data/property';
 import {area,number,price} from '../../lib/format';
+import {withBase} from '../../lib/paths';
 import Icon from '../ui/Icon.astro';
 const facts = [
  {icon:'ruler',name:'Wohnfläche',value:area(property.livingArea)},
@@ -9,4 +10,4 @@ const facts = [
  {icon:'tag',name:'Verkaufspreis',value:property.priceOnRequest?'Auf Anfrage':price(property.price,property.currency)}
 ].filter(f=>f.value);
 ---
-<div class="facts-band"><div class="shell">{facts.length ? <div class="facts-grid">{facts.map(f=><div class="fact"><span class="fact-icon"><Icon name={f.icon} size={27}/></span><div><span class="fact-label">{f.name}</span><strong>{f.value}</strong></div></div>)}</div> : <div class="facts-pending"><Icon name="info" size={21}/><span>Flächen, Zimmeranzahl und Verkaufspreis werden nach Verifizierung der Objektdaten veröffentlicht.</span><a href="/haus">Alle Details <Icon name="arrow-right" size={16}/></a></div>}</div></div>
+<div class="facts-band"><div class="shell">{facts.length ? <div class="facts-grid">{facts.map(f=><div class="fact"><span class="fact-icon"><Icon name={f.icon} size={27}/></span><div><span class="fact-label">{f.name}</span><strong>{f.value}</strong></div></div>)}</div> : <div class="facts-pending"><Icon name="info" size={21}/><span>Flächen, Zimmeranzahl und Verkaufspreis werden nach Verifizierung der Objektdaten veröffentlicht.</span><a href={withBase('/haus')}>Alle Details <Icon name="arrow-right" size={16}/></a></div>}</div></div>

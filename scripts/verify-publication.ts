@@ -12,8 +12,9 @@ const ids = new Set<string>();
 for(const item of media){
  if(ids.has(item.id)) errors.push(`Doppelte Medien-ID: ${item.id}`);
  ids.add(item.id);
- if(!item.src.startsWith('/images/')) errors.push(`Ungültiger Medienpfad: ${item.src}`);
- else if(!existsSync(join(process.cwd(),'public',item.src)))errors.push(`Mediendatei fehlt: ${item.src}`);
+ const mediaPath=item.src.replace(/^\/haus(?=\/)/,'');
+ if(!mediaPath.startsWith('/images/')) errors.push(`Ungültiger Medienpfad: ${item.src}`);
+ else if(!existsSync(join(process.cwd(),'public',mediaPath)))errors.push(`Mediendatei fehlt: ${item.src}`);
  if(!item.areas.length || item.width<=0 || item.height<=0) errors.push(`Ungültige Medienzuordnung/Abmessung: ${item.id}`);
  if(item.variant==='aktuell' && (!item.isVerifiedOriginal || item.kind!=='photo')) errors.push(`Nicht verifizierte Originalaufnahme: ${item.id}`);
  if(item.variant!=='aktuell' && item.isVerifiedOriginal) errors.push(`Falsche Original-Kennzeichnung: ${item.id}`);
@@ -32,7 +33,7 @@ if(site.mode==='production'){
  if(!property.verified) errors.push('Immobiliendaten sind nicht verifiziert.');
  if(!site.publicUrl || !/^https:\/\//.test(site.publicUrl)) errors.push('PUBLIC_SITE_URL als HTTPS-Adresse fehlt.');
  if(!site.company.name || !site.company.email || !site.company.street || !site.company.city) errors.push('Verifizierte Anbieterinformationen fehlen.');
- if(!process.env.RESEND_API_KEY || !process.env.CONTACT_TO_EMAIL || !process.env.CONTACT_FROM_EMAIL) errors.push('Kontaktversand nicht konfiguriert.');
+ if(!process.env.PUBLIC_FORMSPREE_ENDPOINT) errors.push('Formspree-Kontakt-Endpunkt nicht konfiguriert.');
  if(!media.some(m => m.variant==='aktuell' && m.isVerifiedOriginal && m.published)) errors.push('Mindestens eine verifizierte Originalaufnahme erforderlich.');
  if(!media.some(m=>m.id===property.heroMediaId && m.variant==='aktuell' && m.isVerifiedOriginal))errors.push('Hero muss eine verifizierte Originalaufnahme verwenden.');
  if(floorplans.some(p=>!p.verified))errors.push('Nicht verifizierte Grundrisse müssen ersetzt oder entfernt werden.');
