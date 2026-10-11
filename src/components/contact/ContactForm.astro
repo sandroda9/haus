@@ -1,0 +1,55 @@
+---
+import {safeIntent} from '../../lib/validation/contact';
+import {isDemo} from '../../config/site';
+const intent=safeIntent(Astro.url.searchParams.get('anliegen') ?? 'expose');
+---
+<form class="contact-form" method="post" action="/api/contact" data-contact-form novalidate>
+ <div class="form-grid"><div class="field"><label for="firstName">Vorname <span aria-hidden="true">*</span></label><input id="firstName" name="firstName" type="text" autocomplete="given-name" maxlength="80" required placeholder="Ihr Vorname"/><span class="field-error" id="firstName-error" data-error-for="firstName"></span></div>
+ <div class="field"><label for="lastName">Nachname <span aria-hidden="true">*</span></label><input id="lastName" name="lastName" type="text" autocomplete="family-name" maxlength="80" required placeholder="Ihr Nachname"/><span class="field-error" id="lastName-error" data-error-for="lastName"></span></div>
+ <div class="field"><label for="email">E-Mail-Adresse <span aria-hidden="true">*</span></label><input id="email" name="email" type="email" autocomplete="email" maxlength="254" required placeholder="name@beispiel.ch"/><span class="field-error" id="email-error" data-error-for="email"></span></div>
+ <div class="field"><label for="phone">Telefonnummer <small>(optional)</small></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="35" placeholder="+41 ..."/><span class="field-error" id="phone-error" data-error-for="phone"></span></div>
+ <div class="field full"><label for="intent">Worum geht es? <span aria-hidden="true">*</span></label><select id="intent" name="intent" required><option value="expose" selected={intent==='expose'}>Exposé anfordern</option><option value="besichtigung" selected={intent==='besichtigung'}>Besichtigung anfragen</option><option value="frage" selected={intent==='frage'}>Allgemeine Frage</option></select><span class="field-error" id="intent-error" data-error-for="intent"></span></div>
+ <div class="field full"><label for="message">Ihre Nachricht <span aria-hidden="true">*</span></label><textarea name="message" id="message" rows="5" required minlength="10" maxlength="4000" placeholder="Was möchten Sie wissen?"></textarea><span class="field-error" id="message-error" data-error-for="message"></span></div></div>
+ <div class="visually-hidden" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"/></div>
+ <div class="privacy-line"><label><input type="checkbox" name="privacy" required/><span>Ich habe die <a href="/datenschutz" target="_blank" rel="noopener">Datenschutzhinweise</a> zur Bearbeitung meiner Anfrage zur Kenntnis genommen. <span aria-hidden="true">*</span></span></label><span class="field-error" id="privacy-error" data-error-for="privacy"></span></div>
+ <button class="btn btn-primary submit-button" type="submit" data-submit>Nachricht senden <span aria-hidden="true">↗</span></button>
+ <p class="form-status" data-form-status role="status" aria-live="polite"></p>
+ <p class="form-footnote">* Pflichtfelder. {isDemo ? 'Die Website befindet sich im Demo-Modus; derzeit werden keine Nachrichten versendet.' : 'Die Anfrage wird nach erfolgreicher Annahme durch den Versanddienst bestätigt.'}</p>
+</form>
+<script>
+ import {readContact,validateContact,safeIntent} from '../../lib/validation/contact';
+ import type {ContactErrors,ContactResult} from '../../types/contact';
+ const form=document.querySelector<HTMLFormElement>('[data-contact-form]');
+ const message=form?.querySelector<HTMLElement>('[data-form-status]');
+ const submit=form?.querySelector<HTMLButtonElement>('[data-submit]');
+ const intentSelect=form?.querySelector<HTMLSelectElement>('#intent');
+ function showErrors(errors:ContactErrors & {privacy?:string}){
+  form?.querySelectorAll<HTMLElement>('[data-error-for]').forEach(el=>{const key=el.dataset.errorFor as keyof typeof errors;el.textContent=errors[key]??'';});
+  form?.querySelectorAll<HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement>('[name]').forEach(el=>{const key=el.name as keyof typeof errors;const bad=Boolean(errors[key]);el.setAttribute('aria-invalid',String(bad));if(bad)el.setAttribute('aria-describedby',`${key}-error`);else el.removeAttribute('aria-describedby');});
+ }
+ function setKind(kind:string){if(intentSelect)intentSelect.value=safeIntent(kind);}
+ document.querySelectorAll<HTMLElement>('[data-contact-anchor]').forEach(link=>link.addEventListener('click',()=>setKind(link.dataset.contactAnchor??'expose')));
+ window.addEventListener('hashchange',()=>{const m=location.hash.match(/anliegen=(besichtigung|expose|frage)/);if(m)setKind(m[1]);});
+ const initial=location.hash.match(/anliegen=(besichtigung|expose|frage)/);if(initial)setKind(initial[1]);
+ const documentId=new URLSearchParams(location.search).get('dokument');
+ const docNames:Record<string,string>={expose:'Verkaufsdokumentation',plaene:'Verifizierte Grundrisse',technik:'Technische Unterlagen'};
+ if(form && documentId && docNames[documentId]) { const message=form.querySelector<HTMLTextAreaElement>('#message');if(message && !message.value)message.value=`Ich interessiere mich für die Unterlage «${docNames[documentId]}». Bitte informieren Sie mich über die Verfügbarkeit.`; }
+ form?.addEventListener('submit',async e=>{
+  e.preventDefault();if(!form||!submit||!message)return;
+  if(submit.disabled)return;
+  const data=new FormData(form);const values=readContact(data);
+  const errors=validateContact(values) as ContactErrors & {privacy?:string};
+  if(data.get('privacy')!=='on')errors.privacy='Bitte bestätigen Sie den Datenschutzhinweis.';
+  showErrors(errors);
+  if(Object.keys(errors).length){message.textContent='Bitte korrigieren Sie die markierten Angaben.';message.dataset.state='error';form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();return;}
+  submit.disabled=true;submit.textContent='Wird gesendet …';message.textContent='Ihre Anfrage wird verarbeitet …';message.dataset.state='pending';
+  try{
+   const response=await fetch('/api/contact',{method:'POST',body:data,headers:{Accept:'application/json'}});
+   const result=await response.json() as ContactResult;
+   showErrors(result.errors??{});
+   message.textContent=result.message;message.dataset.state=result.ok?'success':'error';
+   if(result.ok)form.reset();
+  }catch{message.textContent='Verbindung fehlgeschlagen. Bitte prüfen Sie Ihre Internetverbindung.';message.dataset.state='error';}
+  finally{submit.disabled=false;submit.innerHTML='Nachricht senden <span aria-hidden="true">↗</span>';}
+ });
+</script>

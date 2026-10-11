@@ -1,0 +1,10 @@
+---
+import {floorplans} from '../../data/floorplans';
+import {media} from '../../data/media';
+import Icon from '../ui/Icon.astro';
+const plan=floorplans[0]; const image=media.find(m=>m.id===plan?.mediaId);
+---
+<section class="section section-line" id="grundriss-vorschau"><div class="shell"><div class="section-head-inline"><div><span class="eyebrow">GRUNDRISS</span><h2>Räume verstehen.<br/><em>Möglichkeiten sehen.</em></h2></div></div>
+ <div class="floorplan-layout"><a class="floorplan-image" href={image?.src} data-pswp-group="floorpreview" data-pswp-width={image?.width} data-pswp-height={image?.height} data-pswp-caption={plan?.name} aria-label="Muster-Grundriss vergrössern"><img src={image?.src} width="1600" height="1050" alt={image?.alt} loading="lazy"/><span class="image-zoom"><Icon name="zoom" size={19}/></span></a>
+  <div class="floorplan-copy"><span class="eyebrow">01 / MUSTERPLAN</span><h3>{plan.name}</h3><p>{plan.description}</p><div class="mini-divider"></div><span class="subtle-heading">WAS SIE HIER SPÄTER FINDEN</span><ul class="check-list"><li><Icon name="check" size={17}/>Raumaufteilung pro Geschoss</li><li><Icon name="check" size={17}/>Raumbezeichnungen und Flächen</li><li><Icon name="check" size={17}/>Zoombare Originalpläne</li></ul><a href="/grundrisse" class="text-link">Alle Grundrisse <Icon name="arrow-up-right" size={18}/></a></div>
+ </div></div></section>

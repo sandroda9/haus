@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1050" viewBox="0 0 1600 1050" role="img" aria-label="Schematischer Demonstrationsgrundriss"><rect x="0" y="0" width="1600" height="1050" fill="#f6f4ee"/>
+ <g transform="translate(245 167)" stroke="#525c59" stroke-width="16" fill="none">
+ <rect x="0" y="0" width="1110" height="675"/><path d="M500 0V675M500 350H1110M0 470H500M800 350V675"/>
+ <path d="M500 130H800V350M800 130H1110" stroke-width="8"/><path d="M180 470V675" stroke-width="8"/>
+ <path d="M0 170Q170 170 170 0M500 505Q650 505 650 350M800 530Q935 530 935 675" stroke="#c7b59f" stroke-width="6"/>
+ </g>
+ <g font-family="Arial,sans-serif" font-size="28" fill="#626c68" text-anchor="middle"><text x="490" y="420">WOHNEN / ESSEN</text><text x="1020" y="420">KÜCHE</text><text x="490" y="740">TERRASSE</text><text x="880" y="760">ZIMMER</text><text x="1200" y="760">NEBENRAUM</text></g>
+ <text x="800" y="105" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" letter-spacing="5" fill="#525c59">SCHEMATISCHES BEISPIEL · NICHT MASSSTÄBLICH</text>
+ <text x="800" y="946" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="#6e746e">Keine realen Grundrissdaten hinterlegt · Zur Demonstration der Ansicht</text></svg>

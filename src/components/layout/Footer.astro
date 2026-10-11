@@ -1,0 +1,13 @@
+---
+import {site} from '../../config/site';
+import Icon from '../ui/Icon.astro';
+const items=[['Das Haus','/haus'],['Galerie','/galerie'],['Grundrisse','/grundrisse'],['Lage','/lage'],['Unterlagen','/unterlagen'],['Kontakt','/kontakt'],['Impressum','/impressum'],['Datenschutz','/datenschutz']];
+---
+<footer class="footer"><div class="shell footer-grid">
+ <div class="footer-brand"><a href="/" class="footer-logo"><img src="/images/brand-mark.svg" alt="" width="35" height="35"/>{site.name}</a><p>Raum für ein neues Kapitel.<br/>Ein digitales Exposé mit Haltung.</p><span class="footer-fine">© {new Date().getFullYear()} {site.name}</span></div>
+ <div><span class="footer-heading">ENTDECKEN</span><div class="footer-links">{items.map(([label,href])=><a href={href}>{label}</a>)}</div></div>
+ <div><span class="footer-heading">KONTAKT</span><p>{site.company.name ?? 'Kontaktdaten vor Veröffentlichung ergänzen.'}</p>
+ {site.company.email && <a class="footer-contact" href={`mailto:${site.company.email}`}><Icon name="mail" size={16}/>{site.company.email}</a>}
+ {site.company.phone && <a class="footer-contact" href={`tel:${site.company.phone.replace(/\s/g,'')}`}><Icon name="phone" size={16}/>{site.company.phone}</a>}
+ <a class="footer-action" href="/kontakt?anliegen=besichtigung">Besichtigung anfragen <Icon name="arrow-up-right" size={17}/></a></div>
+ </div></footer>

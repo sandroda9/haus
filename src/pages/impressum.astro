@@ -1,0 +1,8 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {site} from '../config/site';
+---
+<BaseLayout title="Impressum" description="Anbieterangaben und rechtliche Hinweise zur Demo-Immobilienwebsite.">
+ <div class="shell page-intro"><span class="eyebrow">RECHTLICHES</span><h1>Impressum.</h1></div>
+ <section class="page-content"><div class="shell inner-reading"><div class="legal-warning"><h2>Vor Veröffentlichung vervollständigen und prüfen</h2><p>Diese Seite enthält noch keine vollständigen Anbieterangaben. Sie ist eine editierbare Vorlage und keine abschliessend geprüfte Rechtsauskunft.</p></div><h2>Verantwortliche Stelle</h2><p><strong>{site.company.name??'[Firmenname / verantwortliche natürliche Person ergänzen]'}</strong><br/>{site.company.street??'[Strasse und Hausnummer ergänzen]'}<br/>{site.company.city??'[PLZ und Ort ergänzen]'}</p><p>E-Mail: {site.company.email??'[Kontakt-E-Mail ergänzen]'}<br/>Telefon: {site.company.phone??'[Telefonnummer ergänzen]'}</p><h2>Inhalt und Haftung</h2><p>[Vor Veröffentlichung: Angaben zu Verantwortlichkeit, Aktualität, Haftung und urheberrechtlichen Nutzungsrechten mit zuständiger Fachstelle prüfen und konkretisieren.]</p><h2>Immobilieninformation</h2><p>Die derzeitigen Inhalte sind als Muster gekennzeichnet. Sie bilden weder ein reales Verkaufsangebot noch verbindliche Objekteigenschaften ab.</p></div></section>
+</BaseLayout>

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {site} from '../config/site';
+---
+<BaseLayout title="Datenschutz" description="Datenschutzvorlage für die Immobilienwebsite mit Informationen zur Kontaktverarbeitung und vor dem Livegang zu prüfenden Angaben.">
+ <div class="shell page-intro"><span class="eyebrow">RECHTLICHES</span><h1>Datenschutz.</h1><p>Transparent im Umgang mit personenbezogenen Informationen.</p></div>
+ <section class="page-content"><div class="shell inner-reading"><div class="legal-warning"><h2>Rechtliche Prüfung erforderlich</h2><p>Diese Vorlage muss vor dem Livegang anhand des tatsächlichen Anbieters, Hostings, Versanddienstes, Aufbewahrungskonzepts und der anwendbaren Rechtsvorschriften geprüft und ergänzt werden.</p></div>
+ <h2>1. Verantwortliche Stelle</h2><p>{site.company.name??'[Verantwortliche Stelle und vollständige Anschrift ergänzen]'}<br/>{site.company.email??'[Kontakt für Datenschutzanfragen ergänzen]'}</p>
+ <h2>2. Verarbeitung bei Kontaktanfragen</h2><p>Bei einer Anfrage werden Vorname, Nachname, E-Mail-Adresse, optional Telefonnummer, Anfrageart und Nachricht verarbeitet, um Ihre Anfrage zu bearbeiten. Die Übermittlung erfolgt an einen konfigurierbaren E-Mail-Dienst. Ohne dessen Konfiguration findet kein Versand statt.</p>
+ <h2>3. Technische Verarbeitung</h2><p>Für den sicheren Betrieb können technisch notwendige Zugriffsdaten verarbeitet werden. Die konkrete Hosting-Plattform, allfällige Serverlogs, Aufbewahrungsfristen und Empfänger sind vor Inbetriebnahme hier korrekt zu benennen.</p>
+ <h2>4. Externe Dienste</h2><p>Die Standortansicht wird zunächst durch eine lokal eingebundene, neutrale Illustration ersetzt. Es wird ohne Ihre Handlung kein externer Kartendienst geladen. Diese Demo bindet auch keine externen Analysedienste oder Webfonts ein.</p>
+ <h2>5. E-Mail-Versand</h2><p>Als technische Option ist ein serverseitiger Transaktions-E-Mail-Dienst (Resend) vorgesehen. [Vor Veröffentlichung: tatsächlichen Anbieter, Übermittlungen in Drittländer und erforderliche vertragliche Datenschutzvorkehrungen prüfen und ergänzen.]</p>
+ <h2>6. Rechte und Kontakt</h2><p>Bei datenschutzrechtlichen Anliegen wenden Sie sich an die oben genannte verantwortliche Stelle. [Anwendbare Auskunfts-, Berichtigungs-, Lösch- und weitere Rechte konkret beschreiben und die Rechtslage prüfen.]</p>
+ <h2>7. Aktualität</h2><p>[Datum der letzten fachlichen Prüfung ergänzen.]</p></div></section>
+</BaseLayout>

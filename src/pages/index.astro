@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/property/Hero.astro';
+import QuickFacts from '../components/property/QuickFacts.astro';
+import GalleryPreview from '../components/gallery/GalleryPreview.astro';
+import PropertyDescription from '../components/property/PropertyDescription.astro';
+import FeatureGrid from '../components/property/FeatureGrid.astro';
+import FloorplanPreview from '../components/floorplans/FloorplanPreview.astro';
+import LocationPreview from '../components/location/LocationPreview.astro';
+import ContactSection from '../components/contact/ContactSection.astro';
+---
+<BaseLayout title="Architektur mit Perspektive" description="Ein hochwertiges, transparent gekennzeichnetes digitales Muster-Exposé. Entdecken Sie Architektur, Wohnideen und die interaktive Galerie.">
+ <Hero/>
+ <QuickFacts/>
+ <GalleryPreview/>
+ <PropertyDescription/>
+ <FeatureGrid/>
+ <FloorplanPreview/>
+ <LocationPreview/>
+ <ContactSection/>
+</BaseLayout>
+<script>
+ import {attachLightbox} from '../lib/gallery/lightbox';
+ const floorRoot=document.querySelector<HTMLElement>('#grundriss-vorschau');
+ if(floorRoot)attachLightbox(floorRoot,'a[data-pswp-group]');
+</script>

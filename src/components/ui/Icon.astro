@@ -1,0 +1,8 @@
+---
+import { ArrowRight, ArrowLeft, ArrowUpRight, ChevronRight, ChevronLeft, Menu, X, House, BedDouble, LandPlot, Tag, CalendarDays, Ruler, Check, MapPin, Phone, Mail, FileText, Download, Eye, Send, ClipboardList, Layers, Image, Trees, CookingPot, Thermometer, Car, Sun, Shield, ZoomIn, CircleHelp, LockKeyhole, Map, ExternalLink, Info, Building2, Clock, Compass, MoveRight, SquareArrowOutUpRight } from '@lucide/astro';
+const icons: Record<string, any> = { 'arrow-right':ArrowRight,'arrow-left':ArrowLeft,'arrow-up-right':ArrowUpRight,'chevron-right':ChevronRight,'chevron-left':ChevronLeft,menu:Menu,x:X,house:House,bed:BedDouble,land:LandPlot,tag:Tag,calendar:CalendarDays,ruler:Ruler,check:Check,pin:MapPin,phone:Phone,mail:Mail,file:FileText,download:Download,eye:Eye,send:Send,list:ClipboardList,layers:Layers,image:Image,trees:Trees,'cooking-pot':CookingPot,thermometer:Thermometer,car:Car,sun:Sun,shield:Shield,zoom:ZoomIn,help:CircleHelp,lock:LockKeyhole,map:Map,external:ExternalLink,info:Info,building:Building2,clock:Clock,compass:Compass,move:MoveRight,square:SquareArrowOutUpRight };
+interface Props {name:string; size?:number; strokeWidth?:number; class?:string}
+const {name,size=20,strokeWidth=1.7,class:className=''} = Astro.props;
+const SvgIcon = icons[name] || House;
+---
+<SvgIcon size={size} strokeWidth={strokeWidth} class={className} aria-hidden="true" />

@@ -1,0 +1,15 @@
+---
+import {property} from '../../data/property';
+import {media} from '../../data/media';
+const hero=media.find(item=>item.id===property.heroMediaId);
+import {isDemo} from '../../config/site';
+import Icon from '../ui/Icon.astro';
+---
+<section class="hero shell" aria-labelledby="hero-title">
+ <div class="hero-copy"><div class="hero-kicker"><span class="eyebrow">{property.eyebrow}</span><span class="hero-kicker-line"></span></div>
+  <h1 id="hero-title">{property.heading}</h1><p>{property.subtitle}</p>
+  <div class="hero-actions"><a href="#kontakt" class="btn btn-primary" data-contact-anchor="expose">Exposé anfragen <Icon name="arrow-up-right" size={18}/></a><a href="#kontakt" class="btn btn-outline" data-contact-anchor="besichtigung">Besichtigung anfragen <Icon name="arrow-right" size={18}/></a></div>
+  <a href="#galerie-vorschau" class="hero-discover">Das Haus entdecken <span aria-hidden="true">↓</span></a>
+ </div>
+ <div class="hero-visual"><img src={hero?.src} srcset={hero?.srcSet} sizes={hero?.sizes??"(max-width: 700px) 100vw, 55vw"} width={hero?.width??1600} height={hero?.height??1050} alt={hero?.alt??"Konzeptionelle Architekturansicht"} loading="eager" fetchpriority="high"/><span class="visual-caption">{isDemo?'01 / KONZEPTILLUSTRATION – KEIN OBJEKTFOTO':'01 / AUSSENANSICHT'}</span></div>
+</section>

@@ -1,0 +1,30 @@
+---
+import { site, isDemo } from '../../config/site';
+import Icon from '../ui/Icon.astro';
+const pathname = Astro.url.pathname.replace(/\/$/,'') || '/';
+const links = [{href:'/haus',label:'Das Haus'},{href:'/galerie',label:'Galerie'},{href:'/grundrisse',label:'Grundrisse'},{href:'/lage',label:'Lage'}];
+---
+<header class="site-header" id="seitenanfang">
+ <div class="shell nav-shell">
+  <a class="brand" href="/" aria-label={`${site.name} – zur Startseite`}><span class="brand-symbol"><img src="/images/brand-mark.svg" width="33" height="33" alt="" /></span><span>{site.name}<small>IMMOBILIENEXPOSÉ</small></span></a>
+  <nav class="desktop-nav" aria-label="Hauptnavigation">{links.map(l=><a href={l.href} class:list={{active:pathname===l.href}} aria-current={pathname===l.href?'page':undefined}>{l.label}</a>)}</nav>
+  <a class="btn btn-primary header-cta" href="/kontakt?anliegen=besichtigung"><span>Besichtigung anfragen</span><Icon name="arrow-up-right" size={17}/></a>
+  <button class="mobile-menu-trigger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobile-menu" data-menu-button><Icon name="menu" size={23}/></button>
+ </div>
+ <nav class="mobile-nav" id="mobile-menu" aria-label="Mobile Navigation" hidden>
+  <div class="shell mobile-nav-content">{links.map(l=><a href={l.href} aria-current={pathname===l.href?'page':undefined}>{l.label}<Icon name="arrow-up-right" size={18}/></a>)}
+   <a href="/unterlagen">Unterlagen<Icon name="arrow-up-right" size={18}/></a>
+   <a href="/kontakt?anliegen=besichtigung" class="btn btn-primary mobile-nav-cta">Besichtigung anfragen<Icon name="arrow-right" size={18}/></a>
+  </div>
+ </nav>
+</header>
+{isDemo && <div class="demo-banner" role="note"><span class="shell"><strong>DEMO-WEBSITE</strong> – Musterobjekt mit konzeptionellen Visualisierungen; kein reales Verkaufsangebot.</span></div>}
+<script>
+ const button = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+ const panel = document.querySelector<HTMLElement>('#mobile-menu');
+ const close = () => { if(!button || !panel)return; panel.hidden=true; button.setAttribute('aria-expanded','false');button.setAttribute('aria-label','Menü öffnen'); };
+ button?.addEventListener('click',()=>{ if(!button||!panel)return; const open=button.getAttribute('aria-expanded')!=='true'; panel.hidden=!open;button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Menü schliessen':'Menü öffnen'); if(open)panel.querySelector<HTMLElement>('a')?.focus(); });
+ panel?.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape' && !panel?.hidden){close();button?.focus();}});
+ document.addEventListener('click',e=>{if(panel&&!panel.hidden && !panel.contains(e.target as Node) && !button?.contains(e.target as Node))close();});
+</script>

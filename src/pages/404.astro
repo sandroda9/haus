@@ -1,0 +1,7 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/ui/Icon.astro';
+---
+<BaseLayout title="Seite nicht gefunden" description="Die gesuchte Seite wurde nicht gefunden.">
+ <div class="shell page-intro" style="min-height:55vh"><span class="eyebrow">FEHLER 404</span><h1>Hier führt der Weg <em>nicht weiter.</em></h1><p>Die gewünschte Seite existiert nicht oder wurde verschoben. Zurück zur Übersicht geht es hier:</p><a href="/" class="btn btn-primary">Zur Startseite <Icon name="arrow-right" size={19}/></a></div>
+</BaseLayout>

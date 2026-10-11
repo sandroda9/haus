@@ -1,0 +1,7 @@
+---
+import {property} from '../../data/property';
+import Icon from '../ui/Icon.astro';
+---
+<section class="section" id="ausstattung"><div class="shell"><div class="section-head-inline"><div><span class="eyebrow">AUSSTATTUNG</span><h2>Die Details machen<br/><em>den Unterschied.</em></h2></div><p class="section-aside">Geprüfte Merkmale. Verständlich dargestellt. Ohne unbelegte Versprechen.</p></div>
+ {property.features.length ? <div class="feature-grid">{property.features.map(f=><div class="feature-card"><span class="feature-icon"><Icon name={f.icon} size={22}/></span><div><h3>{f.title}</h3>{f.description && <p>{f.description}</p>}</div><Icon name="check" size={19}/></div>)}</div> : <div class="feature-blank"><div><span class="eyebrow">IN VORBEREITUNG</span><p>Merkmale wie Küche, Aussenraum und Gebäudetechnik erscheinen hier erst, wenn sie für das Verkaufsobjekt bestätigt wurden.</p></div><a class="btn btn-outline" href="/haus">Zum Objektbeschrieb <Icon name="arrow-right" size={17}/></a></div>}
+ </div></section>

@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import {site,isDemo} from '../config/site';
+import {property} from '../data/property';
+import {media} from '../data/media';
+interface Props { title:string; description:string; image?:string }
+const {title,description,image=media.find(m=>m.id===property.heroMediaId)?.src??'/images/brand-mark.svg'}=Astro.props;
+const fullTitle = `${title} | ${site.name}`;
+const canonical=site.publicUrl ? new URL(Astro.url.pathname,site.publicUrl).toString() : undefined;
+const listing= !isDemo && property.verified && site.publicUrl ? {
+ '@context':'https://schema.org','@type':'RealEstateListing',name:property.name,description:property.subtitle,url:new URL('/',site.publicUrl).toString(),
+ about:{'@type':'SingleFamilyResidence',name:property.name,
+ ...(property.rooms?{numberOfRooms:property.rooms}:{}),
+ ...(property.livingArea?{floorSize:{'@type':'QuantitativeValue',value:property.livingArea,unitCode:'MTK'}}:{}),
+ ...(property.municipality?{address:{'@type':'PostalAddress',addressLocality:property.municipality,addressCountry:property.country,
+ ...(property.precision==='exact'&&property.street?{streetAddress:property.street}:{}),
+ ...(property.precision==='exact'&&property.postalCode?{postalCode:property.postalCode}:{})}}:{})},
+ ...(property.price!=null?{offers:{'@type':'Offer',price:property.price,priceCurrency:property.currency}}:{})
+ } : null;
+---
+<!doctype html><html lang={site.language}>
+ <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#faf9f6" />
+  <meta name="description" content={description} />
+  <meta name="robots" content={isDemo?'noindex,nofollow,noarchive':'index,follow'} />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  {site.publicUrl && <meta property="og:image" content={new URL(image,site.publicUrl).toString()} />}
+  {canonical && <link rel="canonical" href={canonical} />}
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>{fullTitle}</title>
+  {listing && <script type="application/ld+json" set:html={JSON.stringify(listing).replace(/</g,"\\u003c")}></script>}
+ </head>
+ <body><a class="skip-link" href="#main">Zum Inhalt springen</a><Header/><main id="main"><slot/></main><Footer/></body>
+</html>

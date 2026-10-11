@@ -1,0 +1,57 @@
+---
+import {media} from '../../data/media';
+import {mediaForState,defaultState,mediaLabel} from '../../lib/gallery/filter';
+import {variants,areas} from '../../config/gallery';
+import Icon from '../ui/Icon.astro';
+const visible=mediaForState(media,defaultState);
+---
+<section class="section gallery-page-section"><div class="shell" data-gallery-app>
+ <div class="gallery-filter-panel"><div class="filter-top"><div><label class="form-label" for="gallery-variant">DARSTELLUNG WÄHLEN</label><select id="gallery-variant" class="filter-select" data-variant>{variants.map(v=><option value={v.value}>{v.label}</option>)}</select></div><p class="filter-helper">Wählen Sie eine Wohnidee oder erkunden Sie alle verfügbaren Ansichten.</p></div>
+ <fieldset class="area-filter" data-area-group hidden><legend class="form-label">BEREICH WÄHLEN</legend><div class="filter-chips">{areas.map((area,i)=><button type="button" data-area={area.value} class:list={['filter-chip',{active:i===0}]} aria-pressed={i===0?'true':'false'}>{area.label}</button>)}</div></fieldset>
+ </div>
+ <div class="gallery-results-head"><p role="status" aria-live="polite" aria-atomic="true" data-result-status>{visible.length} Ansichten verfügbar</p><span class="gallery-results-note">Illustrationen sind als solche gekennzeichnet.</span></div>
+ <div class="gallery-grid" data-gallery-grid>
+ {visible.map(item=><a data-pswp class="gallery-item" href={item.src} data-pswp-width={item.width} data-pswp-height={item.height} data-caption={`${item.title} · ${mediaLabel(item)}`} data-pswp-alt={item.alt}><span class="gallery-image"><img src={item.thumbnailSrc??item.src} srcset={item.srcSet} sizes={item.sizes??"(max-width: 430px) 100vw, (max-width: 700px) 50vw, 33vw"} width={item.width} height={item.height} alt={item.alt} loading="lazy"/><span class="gallery-zoom"><Icon name="zoom" size={19}/></span></span><span class="gallery-item-info"><span>{item.title}</span><small>{mediaLabel(item)}</small></span></a>)}
+ </div>
+ <div class="gallery-empty" data-gallery-empty hidden><Icon name="image" size={34}/><h2>Für diese Auswahl sind noch keine Bilder vorhanden.</h2><p>Die Medien werden ergänzt, sobald passende und freigegebene Aufnahmen beziehungsweise Visualisierungen vorliegen.</p><button class="btn btn-outline" type="button" data-reset>Alle Bilder anzeigen <Icon name="arrow-right" size={17}/></button></div>
+ <p class="gallery-disclaimer">Hinweis zur Visualisierung: Die dargestellte Einrichtung dient lediglich zur Veranschaulichung möglicher Wohnkonzepte. Möbel und Dekoration gehören nicht zum Verkaufsangebot, sofern dies nicht ausdrücklich nachgewiesen wird. Demo-Pläne sind nicht massstäblich.</p>
+ </div></section>
+<script>
+ import {media} from '../../data/media';
+ import {mediaForState,mediaLabel} from '../../lib/gallery/filter';
+ import {parseGalleryState,galleryQuery} from '../../lib/gallery/url-state';
+ import {attachLightbox} from '../../lib/gallery/lightbox';
+ import type {GalleryVariant,GalleryArea,GalleryState,PropertyMedia} from '../../types/media';
+ const root=document.querySelector<HTMLElement>('[data-gallery-app]');
+ const select=root?.querySelector<HTMLSelectElement>('[data-variant]');
+ const group=root?.querySelector<HTMLFieldSetElement>('[data-area-group]');
+ const chips=root?.querySelectorAll<HTMLButtonElement>('[data-area]');
+ const grid=root?.querySelector<HTMLElement>('[data-gallery-grid]');
+ const empty=root?.querySelector<HTMLElement>('[data-gallery-empty]');
+ const status=root?.querySelector<HTMLElement>('[data-result-status]');
+ let state:GalleryState=parseGalleryState(new URLSearchParams(location.search));
+ let lightbox=grid?attachLightbox(grid):null;
+ function card(item:PropertyMedia):HTMLAnchorElement{
+  const a=document.createElement('a');a.className='gallery-item';a.href=item.src;a.dataset.pswp=''; a.dataset.pswpWidth=String(item.width);a.dataset.pswpHeight=String(item.height);a.dataset.caption=`${item.title} · ${mediaLabel(item)}`;a.dataset.pswpAlt=item.alt;
+  const cover=document.createElement('span');cover.className='gallery-image';
+  const img=document.createElement('img');img.src=item.thumbnailSrc??item.src;img.alt=item.alt;img.width=item.width;img.height=item.height;img.loading='lazy';img.srcset=item.srcSet??'';img.sizes=item.sizes??'(max-width: 430px) 100vw, (max-width: 700px) 50vw, 33vw';
+  const zoom=document.createElement('span');zoom.className='gallery-zoom';zoom.textContent='↗';cover.append(img,zoom);
+  const info=document.createElement('span');info.className='gallery-item-info';const title=document.createElement('span');title.textContent=item.title;const label=document.createElement('small');label.textContent=mediaLabel(item);info.append(title,label);a.append(cover,info);return a;
+ }
+ function render(){
+  if(!grid||!select||!group||!empty||!status)return;
+  select.value=state.variant;group.hidden=state.variant==='alle';
+  chips?.forEach(btn=>{const active=btn.dataset.area===state.area;btn.classList.toggle('active',active);btn.setAttribute('aria-pressed',String(active));});
+  const found=mediaForState(media,state);lightbox?.destroy();grid.replaceChildren(...found.map(card));
+  grid.hidden=found.length===0;empty.hidden=found.length>0; status.textContent=`${found.length} ${found.length===1?'Ansicht':'Ansichten'} verfügbar`;
+  lightbox=attachLightbox(grid);
+ }
+ function setState(next:GalleryState,historyMode:'push'|'none'='push'){
+  state=next; if(historyMode==='push')history.pushState(null,'',location.pathname+galleryQuery(state));render();
+ }
+ select?.addEventListener('change',()=>setState({variant:select.value as GalleryVariant,area:'alle-bereiche'}));
+ chips?.forEach(btn=>btn.addEventListener('click',()=>setState({...state,area:btn.dataset.area as GalleryArea})));
+ root?.querySelector('[data-reset]')?.addEventListener('click',()=>setState({variant:'alle',area:'alle-bereiche'}));
+ window.addEventListener('popstate',()=>{state=parseGalleryState(new URLSearchParams(location.search));render();});
+ render();
+</script>
