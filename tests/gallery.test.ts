@@ -16,9 +16,14 @@ describe('zweistufige Galerie',()=>{
   const result=mediaForState(media,{variant:'familie',area:'innenbereich'});
   expect(result.some(x=>x.id==='familie-kueche')).toBe(true);expect(result.every(x=>x.variant==='familie')).toBe(true);
  });
- it('aktuell zeigt niemals ungeprüfte Visualisierungen',()=>{
+ it('zeigt unter Aktuell nur verifizierte Originalaufnahmen des Aussenbereichs',()=>{
   const result=mediaForState(media,{variant:'aktuell',area:'aussenbereich'});
-  expect(result).toEqual([]);
+  expect(result.length).toBe(8);
+  expect(result.every(x=>x.kind==='photo'&&x.isVerifiedOriginal&&x.variant==='aktuell')).toBe(true);
+  expect(result[0].id).toBe('haus-hochwiese-1');
+ });
+ it('zeigt unter Aktuell keine Wohnideen oder Innenaufnahmen',()=>{
+  expect(mediaForState(media,{variant:'aktuell',area:'innenbereich'})).toEqual([]);
  });
  it('teilt gemeinsame Grundrisse zwischen Varianten',()=>{
   for(const variant of ['modern','familie','aktuell'] as const){
@@ -29,7 +34,7 @@ describe('zweistufige Galerie',()=>{
   expect(mediaForState(media,{variant:'modern',area:'unterbau'}).map(x=>x.id)).toEqual(['modern-unterbau']);
  });
  it('sortiert stabil nach sortOrder',()=>{
-  const sorted=mediaForState(media,defaultState);expect(sorted[0].id).toBe('modern-aussen');
+  const sorted=mediaForState(media,defaultState);expect(sorted[0].id).toBe('haus-hochwiese-1');
  });
  it('liest den Direktlink',()=>{
   expect(parseGalleryState(new URLSearchParams('variante=modern&bereich=kueche'))).toEqual({variant:'modern',area:'kueche'});

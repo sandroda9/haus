@@ -11,5 +11,5 @@ import Icon from '../ui/Icon.astro';
   <div class="hero-actions"><a href="#kontakt" class="btn btn-primary" data-contact-anchor="expose">Exposé anfragen <Icon name="arrow-up-right" size={18}/></a><a href="#kontakt" class="btn btn-outline" data-contact-anchor="besichtigung">Besichtigung anfragen <Icon name="arrow-right" size={18}/></a></div>
   <a href="#galerie-vorschau" class="hero-discover">Das Haus entdecken <span aria-hidden="true">↓</span></a>
  </div>
- <div class="hero-visual"><img src={hero?.src} srcset={hero?.srcSet} sizes={hero?.sizes??"(max-width: 700px) 100vw, 55vw"} width={hero?.width??1600} height={hero?.height??1050} alt={hero?.alt??"Konzeptionelle Architekturansicht"} loading="eager" fetchpriority="high"/><span class="visual-caption">{isDemo?'01 / KONZEPTILLUSTRATION – KEIN OBJEKTFOTO':'01 / AUSSENANSICHT'}</span></div>
+ <div class="hero-visual"><img src={hero?.src} srcset={hero?.srcSet} sizes={hero?.sizes??"(max-width: 700px) 100vw, 55vw"} width={hero?.width??1600} height={hero?.height??1050} alt={hero?.alt??"Konzeptionelle Architekturansicht"} loading="eager" fetchpriority="high"/><span class="visual-caption">{hero?.kind==='photo'?'01 / AKTUELLE AUSSENANSICHT':isDemo?'01 / KONZEPTILLUSTRATION – KEIN OBJEKTFOTO':'01 / AUSSENANSICHT'}</span></div>
 </section>

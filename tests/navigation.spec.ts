@@ -1,6 +1,9 @@
 import {test,expect} from '@playwright/test';
 test('responsive Hauptnavigation und CTA',async ({page})=>{
- await page.goto('/haus/');await expect(page.locator('h1').first()).toBeVisible();
+ await page.goto('/haus/');await expect(page.locator('h1').first()).toBeVisible();await expect(page).toHaveTitle(/Haus Hochwiese 1/);
+ await expect(page.locator('.hero-visual img')).toHaveAttribute('src',/Haus_Hochwiese_1\.webp/);
+ await expect(page.locator('.visual-caption')).toHaveText('01 / AKTUELLE AUSSENANSICHT');
+ await expect.poll(()=>page.locator('.hero-visual img').evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
  await page.getByRole('link',{name:/Exposé anfragen/}).first().click();
  await expect(page.locator('#kontakt')).toBeInViewport();
  await expect(page.locator('#intent')).toHaveValue('expose');
@@ -20,7 +23,10 @@ test('Zweistufiger Galerie-Filter, Verlauf und Leerzustand',async ({page})=>{
  await page.goBack();await expect(page.locator('#gallery-variant')).toHaveValue('modern');
  await expect(page.locator('[data-area=kueche]')).toHaveAttribute('aria-pressed','true');
  await page.locator('#gallery-variant').selectOption('aktuell');await page.locator('[data-area=aussenbereich]').click();
- await expect(page.locator('[data-gallery-empty]')).toBeVisible();
+ await expect(page.locator('.gallery-item')).toHaveCount(8);
+ await expect(page.locator('.gallery-item').first()).toHaveAttribute('href',/Haus_Hochwiese_1\.webp/);
+ await expect(page.locator('.gallery-item small').first()).toHaveText('Aktueller Zustand – Originalaufnahme');
+ await expect.poll(()=>page.locator('.gallery-item img').first().evaluate(img=>(img as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
 });
 test('Kontaktformular bleibt ohne Formspree-Endpunkt deaktiviert',async({page})=>{
  await page.goto('/haus/kontakt?anliegen=besichtigung');await expect(page.locator('#intent')).toHaveValue('besichtigung');

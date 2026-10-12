@@ -6,7 +6,7 @@ import Icon from '../ui/Icon.astro';
 const visible=mediaForState(media,defaultState);
 ---
 <section class="section gallery-page-section"><div class="shell" data-gallery-app>
- <div class="gallery-filter-panel"><div class="filter-top"><div><label class="form-label" for="gallery-variant">DARSTELLUNG WÄHLEN</label><select id="gallery-variant" class="filter-select" data-variant>{variants.map(v=><option value={v.value}>{v.label}</option>)}</select></div><p class="filter-helper">Wählen Sie eine Wohnidee oder erkunden Sie alle verfügbaren Ansichten.</p></div>
+ <div class="gallery-filter-panel"><div class="filter-top"><div><label class="form-label" for="gallery-variant">DARSTELLUNG WÄHLEN</label><select id="gallery-variant" class="filter-select" data-variant>{variants.map(v=><option value={v.value}>{v.label}</option>)}</select></div><p class="filter-helper">Wählen Sie eine Wohnidee oder erkunden Sie die aktuellen Aussenaufnahmen.</p></div>
  <fieldset class="area-filter" data-area-group hidden><legend class="form-label">BEREICH WÄHLEN</legend><div class="filter-chips">{areas.map((area,i)=><button type="button" data-area={area.value} class:list={['filter-chip',{active:i===0}]} aria-pressed={i===0?'true':'false'}>{area.label}</button>)}</div></fieldset>
  </div>
  <div class="gallery-results-head"><p role="status" aria-live="polite" aria-atomic="true" data-result-status>{visible.length} Ansichten verfügbar</p><span class="gallery-results-note">Illustrationen sind als solche gekennzeichnet.</span></div>
